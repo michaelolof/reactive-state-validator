@@ -1,30 +1,32 @@
+import { Validation } from "./rules";
+
 export function isControlKey(evt: any): boolean {
     const code = evt.keyCode;
 
     return (
-        (code === 8) || 
-    (code === 9) || 
-    (code >= 17 && code <= 20) || 
-    (code >= 37 && code <= 40) || 
-    (evt.ctrlKey || evt.altKey || evt.metaKey)
+        (code === 8) ||
+        (code === 9) ||
+        (code >= 17 && code <= 20) ||
+        (code >= 37 && code <= 40) ||
+        (evt.ctrlKey || evt.altKey || evt.metaKey)
     );
 
 }
 
 export function set(target: any, key: string, value: any) {
-    target[ key ] = value;
+    target[key] = value;
 }
 
 
 export function unset(target: any, key: string) {
-    delete target[ key ];
+    delete target[key];
 }
 
 
 export function toRegex(val: any) {
     try {
         const flags = val.replace(/.*\/([gimy]*)$/, "$1");
-        const pattern = val.replace(new RegExp("^/(.*?)/"+flags+"$"), "$1");
+        const pattern = val.replace(new RegExp("^/(.*?)/" + flags + "$"), "$1");
         return new RegExp(pattern, flags);
     } catch {
         return undefined;
@@ -32,13 +34,13 @@ export function toRegex(val: any) {
 }
 
 
-export function objectIsEmpty(obj: any) { 
+export function objectIsEmpty(obj: any) {
     return (Object.keys(obj).length === 0 && obj.constructor === Object);
 }
 
 
 export function objectHasProperty(obj: any, prop: string) {
-    if(obj === undefined || obj === null) return false;
+    if (obj === undefined || obj === null) return false;
     const proto = obj.__proto__ || obj.constructor.prototype;
     return (prop in obj) && (!(prop in proto) || proto[prop] !== obj[prop]);
 }
@@ -53,7 +55,7 @@ export function isEqual(value: any, other: any) {
     if (type !== Object.prototype.toString.call(other)) return false;
 
     // If items are not an object or array, return false do a basic equality check.
-    if (["[object Array]", "[object Object]"].indexOf(type) < 0) { 
+    if (["[object Array]", "[object Object]"].indexOf(type) < 0) {
         return value === other;
     }
 
@@ -63,7 +65,7 @@ export function isEqual(value: any, other: any) {
     if (valueLen !== otherLen) return false;
 
     // Compare two items
-    const compare = function(item1: any, item2: any) {
+    const compare = function (item1: any, item2: any) {
 
         // Get the object type
         const itemType = Object.prototype.toString.call(item1);
@@ -121,4 +123,23 @@ export const constants = {
 interface VueObj {
     set(target: any, key: string, value: any): void;
     delete(target: any, key: string): void;
+}
+
+type CustomOption<T> = {
+    name: T;
+    rule: (val: any) => boolean;
+}
+
+export const createRule = <T extends string>(opt: CustomOption<T>) => (val: any): Validation<T> => {
+    if (opt.rule(val)) {
+        return {
+            isValid: true,
+            rule: opt.name,
+        };
+    } else {
+        return {
+            isValid: false,
+            rule: opt.name,
+        };
+    }
 }

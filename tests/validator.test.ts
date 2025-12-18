@@ -36,8 +36,12 @@ describe('Validator', () => {
             email: {
                 val: () => s.invalidEmail.email,
                 rules: [required, email],
-                msg: 'Invalid email',
-                // msgs
+                msg: (c) => {
+                    if (v.rule("email") === "required") {
+                        return "Email cannot be empty"
+                    }
+                    return "Enter a valid email"
+                }
             },
             password: {
                 val: () => s.invalidEmail.password,

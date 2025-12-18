@@ -1,5 +1,6 @@
 
 export { type ValidatorDefinition, validateValue, defineValidations, Reporter, Err } from "./validator";
+
 export { alpha } from "./rules/alpha";
 export { alphaNumeric } from "./rules/alphaNumeric";
 export { charRange } from "./rules/charRange";
@@ -26,3 +27,5 @@ export { required, isEmpty } from "./rules/required";
 export { url } from "./rules/url";
 export { wordRange } from "./rules/wordRange";
 export { type Rule, type Validation } from "./rules/index";
+
+export { createRule } from "./utils"

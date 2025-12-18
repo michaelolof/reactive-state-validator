@@ -12,8 +12,13 @@ export interface Err {
     $isEmpty?: boolean;
     $isWrong?: boolean;
     $rule?: string;
-    $msg?: string
-    $msgs?: Record<string, string>
+}
+
+type ErrorContext = {
+    $isEmpty?: boolean;
+    $isWrong?: boolean;
+    $rule?: string;
+    val(): any;
 }
 
 type Dictionary<V> = {
@@ -27,31 +32,26 @@ type InferRules<D extends { rules: any }> = D["rules"] extends ((val: any) => Va
 
 type ValidateIfCondition = boolean | (() => boolean)
 
-type ValidatorContext = {
-    value(field: string): any;
-}
 
-export type ValidatorDefinition<N = string, R = string> = {
+export type ValidatorDefinition = {
     val?: () => any;
-    ref?: Valuer;
     rules?: Rule<string> | Rule<string>[];
     validateIf?: ValidateIfCondition;
-    msg?: string
-    msgs?: Record<string, string>
-    errors?: Record<string, string | ((c: ValidatorContext) => string)>
+    msg?: string | ((c: ErrorContext) => string);
 };
 
 type ResolveValidatorDefinition<T extends { rules: Rule<string> | Rule<string>[] }> = {
     ref: () => Valuer | undefined;
     rules: Rule<InferRules<T>>[];
     validateIf: () => boolean;
+    msg: ((c: ErrorContext) => string);
     err: Err;
 };
 
 type ValidationDefinitions = Record<string, ValidatorDefinition>;
 
-type ResolvedValidatorDefinitionx<D extends ValidationDefinitions> = {
-    //@ts-expect-error I know what i'm doing
+type ResolvedValidatorDefinitionx<D> = {
+    // @ts-expect-error "Not sure how to handle the undefined yet"
     [K in keyof D]: ResolveValidatorDefinition<D[K]>
 };
 
@@ -62,17 +62,25 @@ function resolveOptions<D extends ValidationDefinitions, R extends ResolvedValid
         const o = options[name];
         //@ts-expect-error I know what I'm doing
         resolved[name] = {
-            ref: o?.ref ? () => o.ref : () => ({ value: o?.val ? o.val() : undefined }),
+            ref: () => ({ value: o?.val ? o.val() : undefined }),
             rules: resolveRules<any>(o?.rules),
             validateIf: resolveValidateIf(o?.validateIf),
-            err: reactive<Err>({
-                $msg: o.msg,
-                $msgs: o.msgs,
-            }),
+            msg: resolveErrorMsg(o?.msg),
+            err: reactive<Err>({}),
         };
     }
 
     return resolved;
+}
+
+function resolveErrorMsg(msg?: string | ((c: ErrorContext) => string)): (c: ErrorContext) => string {
+    if (!msg) {
+        return () => "";
+    } else if (typeof msg === "function") {
+        return msg;
+    } else {
+        return () => msg;
+    }
 }
 
 export function defineValidations<D extends ValidationDefinitions>(options: D): Reporter<D, ResolvedValidatorDefinitionx<D>> {
@@ -84,22 +92,46 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
     options = {} as R;
 
     constructor(opts: D) {
-        this.setup(opts)
+        this.loadOptions(opts)
     }
 
-    setup(opts: D) {
+    /**
+     * Mostly for asynchronous loading of validator options
+     */
+    loadOptions(opts: D) {
         this.options = resolveOptions(opts)
     }
 
-    clear(name: keyof R) {
-        const option = this.options[name];
-        if (!option || !option.validateIf()) {
-            return;
-        }
+    /**
+     * Clear mutated error reports for the specified validation fields
+     */
+    clear(...names: (keyof R)[]) {
+        for (const name of names) {
+            const option = this.options[name];
+            if (!option || !option.validateIf()) {
+                continue;
+            }
 
-        option.err.$rule = undefined;
-        option.err.$isEmpty = undefined;
-        option.err.$isWrong = undefined;
+            option.err.$rule = undefined;
+            option.err.$isEmpty = undefined;
+            option.err.$isWrong = undefined;
+        }
+    }
+
+    /**
+     * Clear mutated error reports for all validation fields
+     */
+    clearAll() {
+        for (const name in this.options) {
+            const option = this.options[name];
+            if (!option || !option.validateIf()) {
+                continue;
+            }
+
+            option.err.$rule = undefined;
+            option.err.$isEmpty = undefined;
+            option.err.$isWrong = undefined;
+        }
     }
 
     isWrong(name: keyof R): boolean {
@@ -120,15 +152,18 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
         return option.err?.$isEmpty || false;
     }
 
-    msg<N extends keyof R>(name: keyof R, rule?: InferRules<R[N]>): string {
-        const fallbackError = "field is invalid"
+    msg<N extends keyof R>(name: keyof R): string {
         const opt = this.options[name]
         if (!opt.err.$isEmpty && !opt.err.$isWrong) {
             return ""
         }
 
-        const r = rule || opt.err.$rule
-        return opt.err.$msgs?.[r || ""] || opt.err.$msg || fallbackError
+        return opt.msg({
+            val: () => opt.ref()?.value,
+            $isEmpty: opt.err.$isEmpty,
+            $isWrong: opt.err.$isWrong,
+            $rule: opt.err.$rule,
+        })
     }
 
     /**
@@ -175,7 +210,7 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
     }
 
     /**
-     * Returns true if the defined and mutates the internal err object
+     * Returns true if the specified validation rules are valid and also mutates the internal err object
      */
     validate(...names: (keyof R)[]): boolean {
         let rtn = true;
@@ -195,7 +230,7 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
     }
 
     /**
-     * Returns true if all the defined validation rules and mutate the internal err object.
+     * Returns true if all the defined validation rules are valid and also mutates the internal err object.
      */
     validateAll(): boolean {
         let rtn = true;
@@ -235,7 +270,7 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
     }
 
     /**
-     * Returns true if all the defined validation rules. Does not mutate the internal err object.
+     * Returns true if all the defined validation rules are valid. Does not mutate the internal err object.
      */
     checkAll(): boolean {
         let rtn = true;
