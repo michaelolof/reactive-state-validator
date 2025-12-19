@@ -1,6 +1,6 @@
 # Reactive State Validator
 
-Reactive State Validator is a simple, fully typed, customizable reactive validator engine. It provides a flexible way to validate your state with built-in rules or custom logic.
+Reactive State Validator is a lightweight, simple, fully typed, and customizable reactive validator engine. It provides a flexible way to validate your state with built-in rules or custom logic.
 
 ## Installation
 
@@ -29,7 +29,7 @@ const vr = defineValidations({
     // Define rules
     rules: [required, minChar(3)],
     // Custom error message
-    msg: () => 'Username is required and must be at least 3 characters.'
+    msg: 'Username is required and must be at least 3 characters.'
   },
   email: {
     val: () => state.email,
@@ -39,13 +39,11 @@ const vr = defineValidations({
     val: () => state.password,
     rules: [required, minChar(8)],
     msg: () => {
-      if (vr.failedOn('password', "required")) {
-        return 'Password cannot be empty';
+      switch (vr.rule("password")) {
+        case "required": return 'Password cannot be empty';
+        case "minChar": return 'Password must be at least 8 characters long.';
+        default: return 'Password is invalid';
       }
-      else if (vr.failedOn('password', "minChar")) {
-        return 'Password must be at least 8 characters long.';
-      }
-      return 'Password is invalid';
     }
   }
 });
@@ -80,6 +78,11 @@ Use the `vr` reporter object in your template (here we're using a Vue template),
     </span>
     <span v-else-if="vr.hasFailed('email')" class="error">
       Enter a valid email address.
+    </span>
+
+    <input v-model="state.password" placeholder="Password" />
+    <span v-if="vr.hasFailed('password')" class="error">
+      {{ vr.msg('password') }}
     </span>
     
     <button @click="submit">Submit</button>

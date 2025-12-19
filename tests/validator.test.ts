@@ -37,10 +37,11 @@ describe('Validator', () => {
                 val: () => s.invalidEmail.email,
                 rules: [required, email],
                 msg: () => {
-                    if (v.failedOn("email", "required")) {
-                        return "Email cannot be empty"
+                    switch (v.rule("email")) {
+                        case "required": return "Email cannot be empty"
+                        case "email": return "Enter a valid email"
+                        default: return "Email is invalid"
                     }
-                    return "Enter a valid email"
                 }
             },
             password: {
@@ -58,6 +59,7 @@ describe('Validator', () => {
         expect(v.hasFailed("email")).toBe(true);
         expect(v.failedOn("email", "email")).toBe(true)
         expect(v.msg("email")).toBe("Enter a valid email")
+        expect(v.msg("password")).toBe("");
     });
 
     it('should validate email field', () => {
