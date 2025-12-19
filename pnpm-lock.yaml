@@ -2,12 +2,14 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/vue': ^2.0.0
+  '@vue/reactivity': ^3.5.26
   typescript: ^5.8.2
   vitest: ^4.0.16
   vue: ^3.5.25
 
 devDependencies:
   '@types/vue': 2.0.0_typescript@5.8.2
+  '@vue/reactivity': 3.5.26
   typescript: 5.8.2
   vitest: 4.0.16
   vue: 3.5.25_typescript@5.8.2
@@ -586,6 +588,12 @@ packages:
       '@vue/shared': 3.5.25
     dev: true
 
+  /@vue/reactivity/3.5.26:
+    resolution: {integrity: sha512-9EnYB1/DIiUYYnzlnUBgwU32NNvLp/nhxLXeWRhHUEeWNTn1ECxX8aGO7RTXeX6PPcxe3LLuNBFoJbV4QZ+CFQ==}
+    dependencies:
+      '@vue/shared': 3.5.26
+    dev: true
+
   /@vue/runtime-core/3.5.25:
     resolution: {integrity: sha512-Z751v203YWwYzy460bzsYQISDfPjHTl+6Zzwo/a3CsAf+0ccEjQ8c+0CdX1WsumRTHeywvyUFtW6KvNukT/smA==}
     dependencies:
@@ -614,6 +622,10 @@ packages:
 
   /@vue/shared/3.5.25:
     resolution: {integrity: sha512-AbOPdQQnAnzs58H2FrrDxYj/TJfmeS2jdfEEhgiKINy+bnOANmVizIEgq1r+C5zsbs6l1CCQxtcj71rwNQ4jWg==}
+    dev: true
+
+  /@vue/shared/3.5.26:
+    resolution: {integrity: sha512-7Z6/y3uFI5PRoKeorTOSXKcDj0MSasfNNltcslbFrPpcw6aXRUALq4IfJlaTRspiWIUOEZbrpM+iQGmCOiWe4A==}
     dev: true
 
   /assertion-error/2.0.1:

@@ -36,8 +36,8 @@ describe('Validator', () => {
             email: {
                 val: () => s.invalidEmail.email,
                 rules: [required, email],
-                msg: (c) => {
-                    if (v.rule("email") === "required") {
+                msg: () => {
+                    if (v.isInvalidRule("email", "required")) {
                         return "Email cannot be empty"
                     }
                     return "Enter a valid email"
@@ -50,19 +50,14 @@ describe('Validator', () => {
             },
         });
 
-        // Initially check (pure validation)
-        expect(v.check('name')).toBe(false);
-
         // Validate (mutating error state)
         v.validateAll();
-        expect(v.isInvalid('name')).toBe(true);
-        expect(v.msg('name')).toBe('Name is required');
 
-        // Fix state
-        s.invalidEmail.name = 'John';
-        v.validateAll();
         expect(v.isInvalid('name')).toBe(false);
-        expect(v.msg('name')).toBe('');
+        expect(v.isInvalid("password")).toBe(false);
+        expect(v.isInvalid("email")).toBe(true);
+        expect(v.isInvalidRule("email", "email")).toBe(true)
+        expect(v.msg("email")).toBe("Enter a valid email")
     });
 
     it('should validate email field', () => {

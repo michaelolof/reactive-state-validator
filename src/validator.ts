@@ -1,7 +1,7 @@
 import { type Rule, type Validation } from "./rules/index";
 import { isEmpty, required } from "./rules/required";
 import { set, unset } from "./utils";
-import { reactive } from "vue";
+import { reactive } from "@vue/reactivity";
 
 type Valuer = {
     value: any;
@@ -37,14 +37,14 @@ export type ValidatorDefinition = {
     val?: () => any;
     rules?: Rule<string> | Rule<string>[];
     validateIf?: ValidateIfCondition;
-    msg?: string | ((c: ErrorContext) => string);
+    msg?: string | (() => string);
 };
 
 type ResolveValidatorDefinition<T extends { rules: Rule<string> | Rule<string>[] }> = {
     ref: () => Valuer | undefined;
     rules: Rule<InferRules<T>>[];
     validateIf: () => boolean;
-    msg: ((c: ErrorContext) => string);
+    msg: (() => string);
     err: Err;
 };
 
@@ -152,18 +152,13 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
         return option.err?.$isEmpty || false;
     }
 
-    msg<N extends keyof R>(name: keyof R): string {
+    msg(name: keyof R): string {
         const opt = this.options[name]
         if (!opt.err.$isEmpty && !opt.err.$isWrong) {
             return ""
         }
 
-        return opt.msg({
-            val: () => opt.ref()?.value,
-            $isEmpty: opt.err.$isEmpty,
-            $isWrong: opt.err.$isWrong,
-            $rule: opt.err.$rule,
-        })
+        return opt.msg()
     }
 
     /**
@@ -188,7 +183,7 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
     /**
      * Check whether a given name and rule failed validation
      */
-    ruleIsInvalid<N extends keyof R>(name: N, ...rules: InferRules<R[N]>[]): boolean {
+    isInvalidRule<N extends keyof R>(name: N, ...rules: InferRules<R[N]>[]): boolean {
         const option = this.options[name];
         if (!option || !option.validateIf()) {
             return false;

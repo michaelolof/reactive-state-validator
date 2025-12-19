@@ -1,6 +1,6 @@
 import { isEmpty, required } from "./rules/required";
 import { set, unset } from "./utils";
-import { reactive } from "vue";
+import { reactive } from "@vue/reactivity";
 function resolveOptions(options) {
     const resolved = {};
     for (const name in options) {
@@ -262,8 +262,8 @@ function resolveMutatingValidationOption(option) {
 function resolveRules(rules) {
     return rules && Array.isArray(rules)
         ? rules : rules && typeof rules === "function"
-        //@ts-ignore
-        ? [rules] : [required];
+            //@ts-ignore
+            ? [rules] : [required];
 }
 function resolveValidateIf(validateIf) {
     if (!validateIf) {
