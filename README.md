@@ -39,10 +39,10 @@ const vr = defineValidations({
     val: () => state.password,
     rules: [required, minChar(8)],
     msg: () => {
-      if (vr.isInvalidRule('password', "required")) {
+      if (vr.failedOn('password', "required")) {
         return 'Password cannot be empty';
       }
-      else if (vr.isInvalidRule('password', "minChar")) {
+      else if (vr.failedOn('password', "minChar")) {
         return 'Password must be at least 8 characters long.';
       }
       return 'Password is invalid';
@@ -70,7 +70,7 @@ Use the `vr` reporter object in your template (here we're using a Vue template),
 <template>
   <div>
     <input v-model="state.username" placeholder="Username" @input="vr.clear('username')" @blur="vr.validate('username')" />
-    <span v-if="vr.isInvalid('username')" class="error">
+    <span v-if="vr.hasFailed('username')" class="error">
       {{ vr.msg('username') }}
     </span>
 
@@ -78,7 +78,7 @@ Use the `vr` reporter object in your template (here we're using a Vue template),
     <span v-if="vr.isEmpty('email')" class="error">
       Email cannot be empty
     </span>
-    <span v-else-if="vr.isInvalid('email')" class="error">
+    <span v-else-if="vr.hasFailed('email')" class="error">
       Enter a valid email address.
     </span>
     
@@ -144,16 +144,16 @@ const v = defineValidations({
 });
 ```
 
-You can check if a specific validation rule failed validation by using the `isInvalidRule` method.
+You can check if a specific validation rule failed validation by using the `failedOn` method.
 
 ```typescript
-const isValid = v.isInvalidRule('status', 'beCool');
+const isValid = v.failedOn('status', 'beCool');
 ```
 
 or in your template
 
 ```html
-<span v-if="v.isInvalidRule('status', 'beCool')" class="error">
+<span v-if="v.failedOn('status', 'beCool')" class="error">
   The status entered isn't cool enough.
 </span>
 ```
@@ -183,11 +183,11 @@ The object returned by `defineValidations` is an instance of `Reporter`.
 | :--- | :--- | :--- |
 | **`validateAll()`** | `boolean` | Validates all fields and mutates the internal error state for reporting. Returns `true` if all valid. |
 | **`validate(...names)`** | `boolean` | Validates specific fields and mutates the internal error state for reporting. |
-| **`checkAll()`** | `boolean` | Validates all fields **without** mutating the internal error state. Useful for disabling buttons. |
+| **`checkAll()`** | `boolean` | Validates all fields **without** mutating the internal error state. Useful for validation without side effects. |
 | **`check(...names)`** | `boolean` | Validates specific fields **without** mutating the internal error state. |
 | **`msg(name)`** | `string` | Returns the error message for the field if invalid. |
-| **`isInvalid(name)`** | `boolean` | Returns `true` if the field failed validation. |
-| **`isInvalidRule(name, ...rules)`** | `boolean` | Returns `true` if the field failed because of one of the specified rules. |
+| **`hasFailed(name)`** | `boolean` | Returns `true` if the field failed validation. |
+| **`failedOn(name, ...rules)`** | `boolean` | Returns `true` if the field failed because of one of the specified rules. |
 | **`isEmpty(name)`** | `boolean` | Returns `true` if the field is empty (and required). |
 | **`isWrong(name)`** | `boolean` | Returns `true` if the field is not empty but failed a rule. |
 | **`rule(name)`** | `string \| undefined` | Returns the name of the failing rule, Returns `undefined` if the field is valid. |

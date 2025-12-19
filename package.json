@@ -26,12 +26,15 @@
     "Model Validation",
     "Vue Validation",
     "Vue State Validation",
-    "Vue Model Validation"
+    "Vue Model Validation",
+    "Reactive Validation",
+    "Reactive State Validation",
+    "Reactive Model Validation"
   ],
   "author": "michaelolof",
   "repository": {
     "type": "git",
-    "url": "https://github.com/michaelolof/vue3-state-validator.git"
+    "url": "https://github.com/michaelolof/reactive-state-validator.git"
   },
   "license": "MIT",
   "devDependencies": {

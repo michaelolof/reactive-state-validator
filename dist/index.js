@@ -24,3 +24,4 @@ export { range } from "./rules/range";
 export { required, isEmpty } from "./rules/required";
 export { url } from "./rules/url";
 export { wordRange } from "./rules/wordRange";
+export { createRule } from "./utils";

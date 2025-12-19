@@ -1,3 +1,4 @@
+import { Validation } from "./rules";
 export declare function isControlKey(evt: any): boolean;
 export declare function set(target: any, key: string, value: any): void;
 export declare function unset(target: any, key: string): void;
@@ -16,5 +17,10 @@ interface VueObj {
     set(target: any, key: string, value: any): void;
     delete(target: any, key: string): void;
 }
+type CustomOption<T> = {
+    name: T;
+    rule: (val: any) => boolean;
+};
+export declare const createRule: <T extends string>(opt: CustomOption<T>) => (val: any) => Validation<T>;
 export {};
 //# sourceMappingURL=utils.d.ts.map

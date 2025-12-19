@@ -176,14 +176,14 @@ export class Reporter<D extends ValidationDefinitions, R extends ResolvedValidat
     /**
      * Checks whether a given name has failed validation (i.e. whether the value is isEmpty or isWrong)
      */
-    isInvalid(name: keyof R): boolean {
+    hasFailed(name: keyof R): boolean {
         return this.isEmpty(name) || this.isWrong(name);
     }
 
     /**
-     * Check whether a given name and rule failed validation
+     * Checks whether a given name has failed validation because of the specified rules
      */
-    isInvalidRule<N extends keyof R>(name: N, ...rules: InferRules<R[N]>[]): boolean {
+    failedOn<N extends keyof R>(name: N, ...rules: InferRules<R[N]>[]): boolean {
         const option = this.options[name];
         if (!option || !option.validateIf()) {
             return false;

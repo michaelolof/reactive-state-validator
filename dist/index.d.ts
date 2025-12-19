@@ -25,4 +25,5 @@ export { required, isEmpty } from "./rules/required";
 export { url } from "./rules/url";
 export { wordRange } from "./rules/wordRange";
 export { type Rule, type Validation } from "./rules/index";
+export { createRule } from "./utils";
 //# sourceMappingURL=index.d.ts.map

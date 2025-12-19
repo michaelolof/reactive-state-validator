@@ -7,16 +7,25 @@ function resolveOptions(options) {
         const o = options[name];
         //@ts-expect-error I know what I'm doing
         resolved[name] = {
-            ref: (o === null || o === void 0 ? void 0 : o.ref) ? () => o.ref : () => ({ value: (o === null || o === void 0 ? void 0 : o.val) ? o.val() : undefined }),
+            ref: () => ({ value: (o === null || o === void 0 ? void 0 : o.val) ? o.val() : undefined }),
             rules: resolveRules(o === null || o === void 0 ? void 0 : o.rules),
             validateIf: resolveValidateIf(o === null || o === void 0 ? void 0 : o.validateIf),
-            err: reactive({
-                $msg: o.msg,
-                $msgs: o.msgs,
-            }),
+            msg: resolveErrorMsg(o === null || o === void 0 ? void 0 : o.msg),
+            err: reactive({}),
         };
     }
     return resolved;
+}
+function resolveErrorMsg(msg) {
+    if (!msg) {
+        return () => "";
+    }
+    else if (typeof msg === "function") {
+        return msg;
+    }
+    else {
+        return () => msg;
+    }
 }
 export function defineValidations(options) {
     return new Reporter(options);
@@ -24,19 +33,41 @@ export function defineValidations(options) {
 export class Reporter {
     constructor(opts) {
         this.options = {};
-        this.setup(opts);
+        this.loadOptions(opts);
     }
-    setup(opts) {
+    /**
+     * Mostly for asynchronous loading of validator options
+     */
+    loadOptions(opts) {
         this.options = resolveOptions(opts);
     }
-    clear(name) {
-        const option = this.options[name];
-        if (!option || !option.validateIf()) {
-            return;
+    /**
+     * Clear mutated error reports for the specified validation fields
+     */
+    clear(...names) {
+        for (const name of names) {
+            const option = this.options[name];
+            if (!option || !option.validateIf()) {
+                continue;
+            }
+            option.err.$rule = undefined;
+            option.err.$isEmpty = undefined;
+            option.err.$isWrong = undefined;
         }
-        option.err.$rule = undefined;
-        option.err.$isEmpty = undefined;
-        option.err.$isWrong = undefined;
+    }
+    /**
+     * Clear mutated error reports for all validation fields
+     */
+    clearAll() {
+        for (const name in this.options) {
+            const option = this.options[name];
+            if (!option || !option.validateIf()) {
+                continue;
+            }
+            option.err.$rule = undefined;
+            option.err.$isEmpty = undefined;
+            option.err.$isWrong = undefined;
+        }
     }
     isWrong(name) {
         const option = this.options[name];
@@ -53,15 +84,12 @@ export class Reporter {
         }
         return ((_a = option.err) === null || _a === void 0 ? void 0 : _a.$isEmpty) || false;
     }
-    msg(name, rule) {
-        var _a;
-        const fallbackError = "field is invalid";
+    msg(name) {
         const opt = this.options[name];
         if (!opt.err.$isEmpty && !opt.err.$isWrong) {
             return "";
         }
-        const r = rule || opt.err.$rule;
-        return ((_a = opt.err.$msgs) === null || _a === void 0 ? void 0 : _a[r || ""]) || opt.err.$msg || fallbackError;
+        return opt.msg();
     }
     /**
      * Returns the failing validation rule for a given name. Will return an empty string if all rules passed validation
@@ -76,13 +104,13 @@ export class Reporter {
     /**
      * Checks whether a given name has failed validation (i.e. whether the value is isEmpty or isWrong)
      */
-    isInvalid(name) {
+    hasFailed(name) {
         return this.isEmpty(name) || this.isWrong(name);
     }
     /**
-     * Check whether a given name and rule failed validation
+     * Checks whether a given name has failed validation because of the specified rules
      */
-    ruleIsInvalid(name, ...rules) {
+    failedOn(name, ...rules) {
         const option = this.options[name];
         if (!option || !option.validateIf()) {
             return false;
@@ -102,7 +130,7 @@ export class Reporter {
         return false;
     }
     /**
-     * Returns true if the defined and mutates the internal err object
+     * Returns true if the specified validation rules are valid and also mutates the internal err object
      */
     validate(...names) {
         var _a;
@@ -120,7 +148,7 @@ export class Reporter {
         return rtn;
     }
     /**
-     * Returns true if all the defined validation rules and mutate the internal err object.
+     * Returns true if all the defined validation rules are valid and also mutates the internal err object.
      */
     validateAll() {
         var _a;
@@ -156,7 +184,7 @@ export class Reporter {
         return rtn;
     }
     /**
-     * Returns true if all the defined validation rules. Does not mutate the internal err object.
+     * Returns true if all the defined validation rules are valid. Does not mutate the internal err object.
      */
     checkAll() {
         var _a;
@@ -262,8 +290,8 @@ function resolveMutatingValidationOption(option) {
 function resolveRules(rules) {
     return rules && Array.isArray(rules)
         ? rules : rules && typeof rules === "function"
-            //@ts-ignore
-            ? [rules] : [required];
+        //@ts-ignore
+        ? [rules] : [required];
 }
 function resolveValidateIf(validateIf) {
     if (!validateIf) {

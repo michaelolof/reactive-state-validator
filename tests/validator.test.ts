@@ -37,7 +37,7 @@ describe('Validator', () => {
                 val: () => s.invalidEmail.email,
                 rules: [required, email],
                 msg: () => {
-                    if (v.isInvalidRule("email", "required")) {
+                    if (v.failedOn("email", "required")) {
                         return "Email cannot be empty"
                     }
                     return "Enter a valid email"
@@ -53,10 +53,10 @@ describe('Validator', () => {
         // Validate (mutating error state)
         v.validateAll();
 
-        expect(v.isInvalid('name')).toBe(false);
-        expect(v.isInvalid("password")).toBe(false);
-        expect(v.isInvalid("email")).toBe(true);
-        expect(v.isInvalidRule("email", "email")).toBe(true)
+        expect(v.hasFailed('name')).toBe(false);
+        expect(v.hasFailed("password")).toBe(false);
+        expect(v.hasFailed("email")).toBe(true);
+        expect(v.failedOn("email", "email")).toBe(true)
         expect(v.msg("email")).toBe("Enter a valid email")
     });
 
@@ -74,12 +74,12 @@ describe('Validator', () => {
         });
 
         v.validateAll();
-        expect(v.isInvalid('email')).toBe(true);
+        expect(v.hasFailed('email')).toBe(true);
         expect(v.msg('email')).toBe('Invalid email');
 
         state.email = 'test@example.com';
         v.validateAll();
-        expect(v.isInvalid('email')).toBe(false);
+        expect(v.hasFailed('email')).toBe(false);
     });
 
     it('should validate multiple rules', () => {
@@ -99,7 +99,7 @@ describe('Validator', () => {
         });
 
         v.validateAll();
-        expect(v.isInvalid('password')).toBe(true);
+        expect(v.hasFailed('password')).toBe(true);
         // We expect the min rule to fail
         // The rule name for min(5) depends on implementation. 
         // Let's inspect the rule name if needed, or just check general failure.
@@ -122,10 +122,10 @@ describe('Validator', () => {
         });
 
         v.validateAll();
-        expect(v.isInvalid('optionalField')).toBe(false); // Should be valid because validation skipped
+        expect(v.hasFailed('optionalField')).toBe(false); // Should be valid because validation skipped
 
         state.shouldValidate = true;
         v.validateAll();
-        expect(v.isInvalid('optionalField')).toBe(true);
+        expect(v.hasFailed('optionalField')).toBe(true);
     });
 });

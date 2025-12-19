@@ -99,3 +99,17 @@ export const constants = {
     Vue: undefined,
     debounceEvents: {},
 };
+export const createRule = (opt) => (val) => {
+    if (opt.rule(val)) {
+        return {
+            isValid: true,
+            rule: opt.name,
+        };
+    }
+    else {
+        return {
+            isValid: false,
+            rule: opt.name,
+        };
+    }
+};
