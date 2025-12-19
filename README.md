@@ -171,8 +171,8 @@ Initializes the validator with the provided definition.
 | Property | Type | Description |
 | :--- | :--- | :--- |
 | **`val`** | `() => any` | Function returning the value to validate. |
-| **`rules`** | `Rule[]` | Array of validation rules. |
-| **`msg`** | `string \| () => string` | Error message to display on failure. |
+| **`rules`** | `Rule \| Rule[]` | Validation rule or array of validation rules. |
+| **`msg`** | `string \| () => string` | Optional. Custom error message to display on failure. |
 | **`validateIf`** | `boolean \| () => boolean` | Optional. Condition to determine if validation should run. |
 
 ### `Reporter` Methods
