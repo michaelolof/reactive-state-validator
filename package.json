@@ -33,7 +33,7 @@
   "author": "michaelolof",
   "repository": {
     "type": "git",
-    "url": "https://github.com/michaelolof/reactive-state-validator.git"
+    "url": "git+https://github.com/michaelolof/reactive-state-validator.git"
   },
   "license": "MIT",
   "devDependencies": {
