@@ -1,6 +1,6 @@
 {
   "name": "reactive-state-validator",
-  "version": "0.2.1",
+  "version": "0.2.0",
   "description": "A simple, fully typed, customizable reactive validator engine to validate your state with built-in rules or custom logic.",
   "type": "module",
   "module": "./dist/index.js",
