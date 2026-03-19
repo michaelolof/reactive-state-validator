@@ -1,4 +1,4 @@
-import { type Validation } from "./index";
+import { type Validation } from "./index.js";
 
 
 export const email = (value: any): Validation<"email"> => {

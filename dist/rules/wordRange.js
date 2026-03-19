@@ -1,5 +1,5 @@
-import { maxWord } from "./maxWord";
-import { minWord } from "./minWord";
+import { maxWord } from "./maxWord.js";
+import { minWord } from "./minWord.js";
 export const wordRange = (minimum, maximum) => (value) => {
     const smallEnough = () => minWord(minimum)(value).isValid;
     const bigEnough = () => maxWord(maximum)(value).isValid;

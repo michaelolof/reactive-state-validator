@@ -1,1 +1,1 @@
-{"version":3,"file":"minWord.d.ts","sourceRoot":"","sources":["../../src/rules/minWord.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,UAAU,EAAE,MAAM,SAAS,CAAC;AAG1C,eAAO,MAAM,OAAO,GAAI,SAAS,MAAM,MAAM,OAAO,GAAG,KAAG,UAAU,CAAC,SAAS,CAU7E,CAAC"}
+{"version":3,"file":"minWord.d.ts","sourceRoot":"","sources":["../../src/rules/minWord.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,UAAU,EAAE,MAAM,YAAY,CAAC;AAG7C,eAAO,MAAM,OAAO,GAAI,SAAS,MAAM,MAAM,OAAO,GAAG,KAAG,UAAU,CAAC,SAAS,CAU7E,CAAC"}

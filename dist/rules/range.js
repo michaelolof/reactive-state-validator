@@ -1,5 +1,5 @@
-import { max } from "./max";
-import { min } from "./min";
+import { max } from "./max.js";
+import { min } from "./min.js";
 export const range = (minimum, maximum) => (value) => {
     const smallEnough = () => min(minimum)(value).isValid;
     const bigEnough = () => max(maximum)(value).isValid;

@@ -1,4 +1,4 @@
-import { comparisonValue } from "./index";
+import { comparisonValue } from "./index.js";
 export const min = (minimum) => (value) => {
     if (minimum <= comparisonValue(value))
         return {

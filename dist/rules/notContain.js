@@ -1,4 +1,4 @@
-import { contains } from "./contains";
+import { contains } from "./contains.js";
 export const notContain = (content) => (value) => {
     if (contains(content)(value).isValid === false)
         return {

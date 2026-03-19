@@ -1,6 +1,6 @@
-import { type Validation } from "./index";
-import { maxWord } from "./maxWord";
-import { minWord } from "./minWord";
+import { type Validation } from "./index.js";
+import { maxWord } from "./maxWord.js";
+import { minWord } from "./minWord.js";
 
 
 

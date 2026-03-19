@@ -1,5 +1,5 @@
-import { isEqual } from "../utils";
-import { type Validation } from "./index";
+import { isEqual } from "../utils.js";
+import { type Validation } from "./index.js";
 
 
 export const equal = (compare: any) => (value: any): Validation<"equal"> => {

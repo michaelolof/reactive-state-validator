@@ -1,4 +1,4 @@
-import { type Validation } from "./index";
+import { type Validation } from "./index.js";
 
 
 export const minWord = (minimum: number) => (value: any): Validation<"minWord"> => {

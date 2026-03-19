@@ -1,6 +1,6 @@
-import { type Validation } from "./index";
-import { minChar } from "./minChar";
-import { maxChar } from "./maxChar";
+import { type Validation } from "./index.js";
+import { minChar } from "./minChar.js";
+import { maxChar } from "./maxChar.js";
 
 
 

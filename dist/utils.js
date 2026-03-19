@@ -100,16 +100,16 @@ export const constants = {
     debounceEvents: {},
 };
 export const createRule = (opt) => (val) => {
-    if (opt.rule(val)) {
+    const rst = opt.rule(val);
+    if (typeof rst === "boolean") {
         return {
-            isValid: true,
+            isValid: rst,
             rule: opt.name,
         };
     }
-    else {
-        return {
-            isValid: false,
-            rule: opt.name,
-        };
-    }
+    return {
+        isValid: rst.isValid,
+        rule: opt.name,
+        errors: rst.errors,
+    };
 };

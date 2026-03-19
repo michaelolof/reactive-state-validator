@@ -1,4 +1,4 @@
-import { objectIsEmpty } from "../utils";
+import { objectIsEmpty } from "../utils.js";
 export function required(value) {
     if (isEmpty(value) || value == "0") {
         return {

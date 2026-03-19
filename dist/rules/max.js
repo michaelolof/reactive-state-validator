@@ -1,4 +1,4 @@
-import { comparisonValue } from "./index";
+import { comparisonValue } from "./index.js";
 export const max = (maximum) => (value) => {
     if (maximum >= comparisonValue(value))
         return {

@@ -1,5 +1,5 @@
-import { contains } from "./contains";
-import { type Validation } from "./index";
+import { contains } from "./contains.js";
+import { type Validation } from "./index.js";
 
 
 

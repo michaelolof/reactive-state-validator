@@ -1,4 +1,4 @@
-import { Validation } from "./rules";
+import { Validation } from "./rules/index.js";
 
 export function isControlKey(evt: any): boolean {
     const code = evt.keyCode;
@@ -127,19 +127,21 @@ interface VueObj {
 
 type CustomOption<T> = {
     name: T;
-    rule: (val: any) => boolean;
+    rule: (val: any) => (boolean | { isValid: boolean; errors?: string[] });
 }
 
 export const createRule = <T extends string>(opt: CustomOption<T>) => (val: any): Validation<T> => {
-    if (opt.rule(val)) {
+    const rst = opt.rule(val)
+    if (typeof rst === "boolean") {
         return {
-            isValid: true,
+            isValid: rst,
             rule: opt.name,
         };
-    } else {
-        return {
-            isValid: false,
-            rule: opt.name,
-        };
+    }
+
+    return {
+        isValid: rst.isValid,
+        rule: opt.name,
+        errors: rst.errors,
     }
 }

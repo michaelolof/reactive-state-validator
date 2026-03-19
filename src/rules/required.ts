@@ -1,5 +1,5 @@
-import { objectIsEmpty } from "../utils";
-import { type Validation } from "./index";
+import { objectIsEmpty } from "../utils.js";
+import { type Validation } from "./index.js";
 
 
 export function required(value: any): Validation<"required"> {

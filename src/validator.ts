@@ -1,6 +1,6 @@
-import { type Rule, type Validation } from "./rules/index";
-import { isEmpty, required } from "./rules/required";
-import { set, unset } from "./utils";
+import { type Rule, type Validation } from "./rules/index.js";
+import { isEmpty, required } from "./rules/required.js";
+import { set, unset } from "./utils.js";
 import { reactive } from "@vue/reactivity";
 
 type Valuer = {
@@ -66,7 +66,11 @@ function resolveOptions<D extends ValidationDefinitions, R extends ResolvedValid
             rules: resolveRules<any>(o?.rules),
             validateIf: resolveValidateIf(o?.validateIf),
             msg: resolveErrorMsg(o?.msg),
-            err: reactive<Err>({}),
+            err: reactive<Err>({
+                $isEmpty: undefined,
+                $isWrong: undefined,
+                $rule: undefined,
+            }),
         };
     }
 
@@ -333,11 +337,9 @@ export function validateValue(value: any, rules: Rule<string>[]): boolean {
 
 
 function validateFieldAndMutate(value: any, err: Err, rules: Rule<string>[]): boolean {
-
     for (const rule of rules) {
 
         const validation = validateAsOptional(value, rule);
-
         if (!validation.isValid) {
 
             if (validation.rule === "required") {

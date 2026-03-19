@@ -1,5 +1,5 @@
-import { type Validation } from "./index";
-import { isEmpty } from "./required";
+import { type Validation } from "./index.js";
+import { isEmpty } from "./required.js";
 
 
 export const url = (value: any): Validation<"url"> => {

@@ -1,4 +1,4 @@
-import { type Rule, type Validation } from "./rules/index";
+import { type Rule, type Validation } from "./rules/index.js";
 type Valuer = {
     value: any;
 };

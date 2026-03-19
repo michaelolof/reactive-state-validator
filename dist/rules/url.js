@@ -1,4 +1,4 @@
-import { isEmpty } from "./required";
+import { isEmpty } from "./required.js";
 export const url = (value) => {
     const isUrl = () => new RegExp("^(https?:\\/\\/)?" + // protocol
         "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name

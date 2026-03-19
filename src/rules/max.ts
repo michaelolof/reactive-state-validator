@@ -1,4 +1,4 @@
-import { comparisonValue, type Validation } from "./index";
+import { comparisonValue, type Validation } from "./index.js";
 
 
 

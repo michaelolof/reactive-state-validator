@@ -1,4 +1,4 @@
-import { isEqual } from "../utils";
+import { isEqual } from "../utils.js";
 export const equal = (compare) => (value) => {
     if (isEqual(compare, value)) {
         return {

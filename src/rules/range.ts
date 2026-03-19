@@ -1,6 +1,6 @@
-import { type Validation } from "./index";
-import { max } from "./max";
-import { min } from "./min";
+import { type Validation } from "./index.js";
+import { max } from "./max.js";
+import { min } from "./min.js";
 
 
 

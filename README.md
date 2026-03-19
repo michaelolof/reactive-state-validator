@@ -137,6 +137,13 @@ const beCool = createRule({
   rule: (value: any) => value === 'cool'
 });
 
+export const notEqual = (compare: any) => createRule({
+    name: "notEqual",
+    rule: (val: any): boolean => {
+        return compare !== val;
+    }, 
+});
+
 // Usage
 const v = defineValidations({
   status: {

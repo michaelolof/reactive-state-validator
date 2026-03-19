@@ -1,1 +1,1 @@
-{"version":3,"file":"ipAddress.d.ts","sourceRoot":"","sources":["../../src/rules/ipAddress.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,UAAU,EAAE,MAAM,SAAS,CAAC;AAG1C,eAAO,MAAM,SAAS,GAAI,OAAO,GAAG,KAAG,UAAU,CAAC,WAAW,CAW5D,CAAC"}
+{"version":3,"file":"ipAddress.d.ts","sourceRoot":"","sources":["../../src/rules/ipAddress.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,UAAU,EAAE,MAAM,YAAY,CAAC;AAG7C,eAAO,MAAM,SAAS,GAAI,OAAO,GAAG,KAAG,UAAU,CAAC,WAAW,CAW5D,CAAC"}

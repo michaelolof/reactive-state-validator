@@ -1,5 +1,5 @@
-import { isEmpty, required } from "./rules/required";
-import { set, unset } from "./utils";
+import { isEmpty, required } from "./rules/required.js";
+import { set, unset } from "./utils.js";
 import { reactive } from "@vue/reactivity";
 function resolveOptions(options) {
     const resolved = {};
@@ -11,7 +11,11 @@ function resolveOptions(options) {
             rules: resolveRules(o === null || o === void 0 ? void 0 : o.rules),
             validateIf: resolveValidateIf(o === null || o === void 0 ? void 0 : o.validateIf),
             msg: resolveErrorMsg(o === null || o === void 0 ? void 0 : o.msg),
-            err: reactive({}),
+            err: reactive({
+                $isEmpty: undefined,
+                $isWrong: undefined,
+                $rule: undefined,
+            }),
         };
     }
     return resolved;
