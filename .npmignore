@@ -5,3 +5,5 @@ src
 tests
 
 .npmrc
+
+tsconfig*
